@@ -175,6 +175,9 @@ Understanding the difference between these two is crucial for efficient containe
 ### 6. `docker attach`
 **Description**: Attach your local standard input, output, and error streams to a running container. This allows you to view its output or interact with it in real-time.
 
+> [!IMPORTANT]
+> `docker attach` always takes you to the **primary command** (PID 1) of the container.
+
 **Example**:
 ```bash
 # Attach to a generic web server
@@ -220,7 +223,49 @@ PONG
 
 ---
 
-### 8. `docker ps`
+### 8. `docker stop`
+**Description**: Stop one or more running containers. This sends a SIGTERM signal to the container's primary process.
+
+**Example**:
+```bash
+# Stop a container by its name
+docker stop pradipta_redis
+
+# Stop multiple containers
+docker stop container1 container2
+
+# Terminal output (confirms by echoing the name)
+$ docker stop pradipta_redis
+pradipta_redis
+```
+
+---
+
+### 9. `docker rm`
+**Description**: Remove one or more containers. The container must be stopped before it can be removed unless you use the `-f` (force) flag.
+
+**Example**:
+```bash
+# Remove a stopped container
+docker rm pradipta_redis
+
+# Forcefully remove a running container
+docker rm -f pradipta_redis
+
+# Terminal output (confirms by echoing the name)
+$ docker rm pradipta_redis
+pradipta_redis
+```
+
+> [!CAUTION]
+> If you try to remove a **running** container without the `-f` flag, Docker will throw an error:
+> ```text
+> Error response from daemon: cannot remove container "pradipta_redis": container is running: stop the container before removing or force remove
+> ```
+
+---
+
+### 10. `docker ps`
 **Description**: List running containers. Use the `-a` flag to see all containers (including stopped ones).
 
 **Example**:
