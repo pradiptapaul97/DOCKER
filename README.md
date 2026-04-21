@@ -177,8 +177,23 @@ Understanding the difference between these two is crucial for efficient containe
 
 **Example**:
 ```bash
+# Attach to a generic web server
 docker attach my-web-server
+
+# Attach to Redis and view shutdown logs after pressing Ctrl+C
+$ docker attach pradipta_redis
+1:signal-handler (1776784417) Received SIGINT scheduling shutdown...
+1:M 21 Apr 2026 15:13:37.247 * User requested shutdown...
+1:M 21 Apr 2026 15:13:37.250 * Saving the final RDB snapshot before exiting.
+1:M 21 Apr 2026 15:13:37.258 * BGSAVE done, 0 keys saved, 0 keys skipped, 88 bytes written.
+1:M 21 Apr 2026 15:13:37.271 * DB saved on disk
+1:M 21 Apr 2026 15:13:37.271 # Redis is now ready to exit, bye bye...
+
+got 3 SIGTERM/SIGINTs, forcefully exiting
 ```
+
+> [!NOTE]
+> When you attach to a process like Redis, the terminal may appear blank if the process isn't currently outputting anything. Pressing `Ctrl+C` will send a SIGINT signal, which typically stops the process and shuts down the container, as shown in the logs above.
 
 > [!TIP]
 > To detach from a container without stopping it, use the escape sequence `Ctrl+P`, `Ctrl+Q`.
