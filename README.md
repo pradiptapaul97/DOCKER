@@ -61,6 +61,9 @@ docker run -d -p 8080:80 --name my-web-server nginx
 
 # Run a Node.js container with a custom name
 docker run --name my-node-app node
+
+# Run Node.js interactively with a custom name
+docker run -it --name pradipta_node node
 ```
 
 **What this command does**:
