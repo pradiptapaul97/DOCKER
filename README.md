@@ -54,11 +54,20 @@ docker pull nginx:latest
 - `-it`: Interactive mode (interactive + TTY), useful for shell access.
 - `--rm`: Automatically remove the container when it exits.
 
-**Example**:
+**Examples**:
 ```bash
 # Run an Nginx web server in the background on port 8080
 docker run -d -p 8080:80 --name my-web-server nginx
+
+# Run a Node.js container with a custom name
+docker run --name my-node-app node
 ```
+
+**What this command does**:
+- **Finds the image**: Checks if the `node` image exists locally; if not, it pulls it from Docker Hub.
+- **Creates the container**: Sets up a new container instance from the image.
+- **Assigns a name**: Names the container `my-node-app` instead of using a random string.
+- **Starts the process**: Executes the default entrypoint for the Node.js image.
 
 ---
 
@@ -72,20 +81,6 @@ docker start my-web-server
 
 # Start a container by its ID
 docker start 1a2b3c4d5e6f
-```
-
----
-
-### 6. `docker ps`
-**Description**: List running containers. Use the `-a` flag to see all containers (including stopped ones).
-
-**Example**:
-```bash
-# List only running containers
-docker ps
-
-# List all containers (running and stopped)
-docker ps -a
 ```
 
 ---
@@ -108,3 +103,32 @@ Understanding the difference between these two is crucial for efficient containe
 
 > [!TIP]
 > You can combine flags for more powerful queries, such as `docker ps -aq` to get only the IDs of all containers.
+
+---
+
+### 6. `docker attach`
+**Description**: Attach your local standard input, output, and error streams to a running container. This allows you to view its output or interact with it in real-time.
+
+**Example**:
+```bash
+docker attach my-web-server
+```
+
+> [!TIP]
+> To detach from a container without stopping it, use the escape sequence `Ctrl+P`, `Ctrl+Q`.
+
+---
+
+### 7. `docker ps`
+**Description**: List running containers. Use the `-a` flag to see all containers (including stopped ones).
+
+**Example**:
+```bash
+# List only running containers
+docker ps
+
+# List all containers (running and stopped)
+docker ps -a
+```
+
+---
