@@ -533,3 +533,45 @@ docker compose down -t 2
 ```
 
 ---
+
+## 📄 Understanding the Dockerfile
+
+A **Dockerfile** is a plain text document containing a series of instructions that Docker uses to automatically build an image. 
+
+Here is an example of a Dockerfile used for a Node.js (NestJS) application, broken down command by command:
+
+```dockerfile
+FROM node:24.15.0-alpine
+
+# Set working directory
+WORKDIR /app
+
+# Copy package.json and yarn.lock
+COPY package*.json ./
+COPY yarn.lock ./
+
+# Install dependencies (including dev dependencies needed for Nest CLI)
+RUN yarn install --frozen-lockfile
+
+# Copy the rest of the application code
+COPY . .
+
+# Expose application port
+EXPOSE 3000
+
+# Start the application in development mode with watch
+CMD ["yarn", "start:dev"]
+```
+
+### 🧠 Dockerfile Instructions Explained
+
+| Command | Description & Example |
+| :--- | :--- |
+| **`FROM`** | **Sets the Base Image.** Every Dockerfile must start with a `FROM` instruction. It specifies the underlying OS and environment. <br> *Example:* `FROM node:24.15.0-alpine` uses a lightweight Linux distribution (Alpine) containing Node.js version 24.15.0. |
+| **`WORKDIR`** | **Sets the Working Directory.** Defines the default directory where all subsequent `COPY`, `RUN`, and `CMD` instructions will execute inside the container. <br> *Example:* `WORKDIR /app` means all following commands run inside the `/app` folder. |
+| **`COPY`** | **Copies Files into the Container.** Moves files or directories from your local machine (host) into the container's filesystem. <br> *Example:* `COPY package*.json ./` copies `package.json` into the current working directory (`/app`). `COPY . .` copies everything from your local directory into the container. |
+| **`RUN`** | **Executes Commands During Build.** Runs commands inside the container *while the image is being built*. This is typically used to install dependencies or packages. <br> *Example:* `RUN yarn install --frozen-lockfile` installs project dependencies cleanly into the image. |
+| **`EXPOSE`** | **Documents the Port.** This does *not* actually publish the port to the host machine (you still need `-p` in `docker run`). It serves as documentation indicating which port the application inside the container will listen on. <br> *Example:* `EXPOSE 3000` means the Node application runs on port 3000. |
+| **`CMD`** | **Sets the Default Command.** Specifies the command that will execute when the container is finally *started* (run). There can only be one `CMD` instruction in a Dockerfile. <br> *Example:* `CMD ["yarn", "start:dev"]` starts the application development server when the container boots up. |
+
+---
