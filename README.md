@@ -574,4 +574,15 @@ CMD ["yarn", "start:dev"]
 | **`EXPOSE`** | **Documents the Port.** This does *not* actually publish the port to the host machine (you still need `-p` in `docker run`). It serves as documentation indicating which port the application inside the container will listen on. <br> *Example:* `EXPOSE 3000` means the Node application runs on port 3000. |
 | **`CMD`** | **Sets the Default Command.** Specifies the command that will execute when the container is finally *started* (run). There can only be one `CMD` instruction in a Dockerfile. <br> *Example:* `CMD ["yarn", "start:dev"]` starts the application development server when the container boots up. |
 
+### ⚖️ RUN vs CMD: The Crucial Difference
+
+One of the most common points of confusion in Docker is understanding when to use `RUN` versus `CMD`.
+
+| Feature | `RUN` | `CMD` |
+| :--- | :--- | :--- |
+| **When does it execute?** | During the **Build Phase** (when you run `docker build` or compose builds the image). | During the **Run Phase** (when the container actually boots up via `docker run` or `docker start`). |
+| **What is its purpose?** | Modifies the image permanently (e.g., installing packages, creating files, compiling code). Each `RUN` creates a new layer in the image. | Defines the default process/program that the container will execute to keep it alive. |
+| **How many can you have?**| You can have as many `RUN` instructions as you need. | You should only have **one** `CMD` instruction (if you have multiple, only the last one takes effect). |
+| **Real-world Analogy** | Assembling the engine and putting gas in the car at the factory. | Turning the key in the ignition to start driving the car. |
+
 ---
