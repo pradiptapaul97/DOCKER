@@ -416,3 +416,54 @@ f4cb73665d586d8ef26038bf80f65e01b8a7435918617a5b18231145aacb90e5
 ```
 
 ---
+
+## 🐙 Docker Compose
+
+**Docker Compose** is a tool for defining and running multi-container Docker applications. While the standard `docker run` command is great for starting single containers, modern applications usually consist of multiple interconnected services (e.g., a web frontend, a Node.js backend, a Postgres database).
+
+Instead of running multiple long `docker run` commands and manually managing networks to link them, Docker Compose allows you to define your entire application stack in a single, readable YAML file (typically named `compose.yaml` or `docker-compose.yml`). 
+
+### ✨ Key Benefits:
+- **Single Command Operation**: Start, stop, and rebuild all your services together with a single command (e.g., `docker compose up` or `docker compose down`).
+- **Declarative Configuration**: Your environments, ports, volumes, and dependencies are documented in a file, eliminating the need to memorize long CLI commands and making it easy to version control.
+- **Automatic Networking**: By default, Compose sets up a dedicated, isolated network for your app. Containers can easily communicate with each other using their service names as hostnames.
+
+### 📝 Example: Converting `docker run` to Compose
+
+Here is an example of taking a complex `docker run` command and converting it into a clean `docker-compose.yml` file.
+
+**The `docker run` Command**:
+```bash
+docker run -d --name mongo -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=mongoadmin -e MONGO_INITDB_ROOT_PASSWORD=password --network mongo-network mongo:latest
+```
+
+**The Equivalent `docker-compose.yml`**:
+```yaml
+services:
+  mongo:
+    image: mongo:latest
+    container_name: mongo # Replaces --name
+    ports:
+      - "27017:27017" # Replaces -p
+    environment: # Replaces -e flags
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - mongo-network # Replaces --network
+
+networks:
+  mongo-network:
+    external: true # Assumes the network was created manually. Remove 'external: true' to let Compose create it automatically.
+    driver: bridge # Explicitly sets the network type
+```
+
+**Understanding `driver: bridge`**:
+- Setting `driver: bridge` explicitly tells Docker to use a bridge network (the default for container isolation on a single host). 
+- While it is the default behavior when Compose creates a network, explicitly defining it makes your `compose.yaml` more readable and self-documenting. 
+- *Note*: If you are using `external: true` (meaning the network was already created via `docker network create`), Compose relies on the existing network's configuration, so the `driver` field serves primarily as documentation here.
+
+
+> [!TIP]
+> To run this configuration in the background, simply execute: `docker compose up -d` in the same directory as the file.
+
+---
