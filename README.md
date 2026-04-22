@@ -503,4 +503,33 @@ docker compose up -d --no-deps web
 docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
 ```
 
+#### `docker compose down`
+**Description**: Stops containers and removes containers, networks, volumes, and images created by `up`. It is the cleanest way to gracefully tear down your application stack.
+
+**Common Flags / Options**:
+- `-v`, `--volumes`: **Remove volumes.** Remove named volumes declared in the `volumes` section of the Compose file and anonymous volumes attached to containers. *Extremely important if you want to completely wipe the database data and start fresh!*
+- `--rmi type`: **Remove images.** Remove images used by services. Type must be one of:
+    - `all`: Remove all images used by any service.
+    - `local`: Remove only custom-built images that don't have a specific custom tag.
+- `--remove-orphans`: **Clean up.** Remove containers for services not defined in the current Compose file.
+- `-t`, `--timeout TIMEOUT`: **Set a timeout.** Specify a shutdown timeout in seconds (default is 10). Useful for applications that take a long time to run clean up scripts before exiting.
+
+**Examples**:
+```bash
+# 1. Standard teardown (Stops containers and removes networks, but keeps data volumes and images)
+docker compose down
+
+# 2. Total Wipe: Remove everything including persistent database volumes (WARNING: Data will be lost!)
+docker compose down -v
+
+# 3. Teardown and remove all built or downloaded images
+docker compose down --rmi all
+
+# 4. Nuclear Option: Teardown, remove volumes, remove images, and remove orphans
+docker compose down -v --rmi all --remove-orphans
+
+# 5. Fast teardown (Wait only 2 seconds before forcefully killing containers)
+docker compose down -t 2
+```
+
 ---
