@@ -11,7 +11,11 @@ A comprehensive guide to essential Docker commands for managing containers and i
 Before using commands, it's essential to understand the two main building blocks of Docker:
 
 ### 1. 🖼️ Docker Image
-A **Docker Image** is a read-only template containing the instructions for creating a Docker container. Think of it as a **blueprint**, a **snapshot**, or a **class** in OOP. It contains the OS, application code, and all dependencies.
+A **Docker Image** is a read-only template containing the instructions for creating a Docker container. Think of it as a **blueprint**, a **snapshot**, or a **class** in OOP.
+
+- **📦 Layered Structure**: Application images are built on top of **Base Images**. You start with an OS layer and stack your application code and dependencies on top.
+- **🐧 Linux Foundations**: Most containers are **Linux-based** because Linux is lightweight, open-source, and efficient for server environments.
+- **🏔️ Example (Alpine)**: **Alpine Linux** is one of the most popular base images because it is incredibly small (approx. 5MB), ensuring fast downloads and minimal resource usage.
 
 ### 2. 📦 Docker Container
 A **Docker Container** is a running instance of an image. It is a **live, isolated environment** where your application executes. It adds a thin writable layer on top of the read-only image.
@@ -137,6 +141,7 @@ What's next:
 - `--name`: Assign a custom name to your container for easier management.
 - `-it`: Interactive mode (interactive + TTY), useful for shell access.
 - `--rm`: Automatically remove the container when it exits.
+- `-e`: Set environment variables (e.g., `-e KEY=VALUE`).
 
 **Examples**:
 ```bash
@@ -145,6 +150,9 @@ docker run -d -p 8080:80 --name my-web-server nginx
 
 # Run a Node.js container with a custom name
 docker run --name my-node-app node
+
+# Run a PostgreSQL database with an environment variable and port mapping
+docker run -d --name postgres_db -e POSTGRES_PASSWORD=password -p 5432:5432 postgres:18.3-alpine
 
 # Run Node.js interactively with a custom name
 docker run -it --name pradipta_node node
