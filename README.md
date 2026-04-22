@@ -152,7 +152,7 @@ docker run -d -p 8080:80 --name my-web-server nginx
 docker run --name my-node-app node
 
 # Run a PostgreSQL database with an environment variable and port mapping
-docker run -d --name postgres_db -e POSTGRES_PASSWORD=password -p 5432:5432 postgres:18.3-alpine
+ docker run -d --name postgres_db -e POSTGRES_USER=pradipta -e POSTGRES_PASSWORD=password -e POSTGRES_DB=mydb -p 5432:5432 postgres:latest
 
 # Run Node.js interactively with a custom name
 docker run -it --name pradipta_node node
@@ -322,6 +322,25 @@ docker ps -a
 $ docker ps
 CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS         PORTS      NAMES
 8698d0e806ac   redis     "docker-entrypoint.s…"   4 minutes ago   Up 2 minutes   6379/tcp   pradipta_redis
+```
+
+---
+
+### 11. `docker logs`
+**Description**: Fetch the logs of a container. This is essential for debugging applications running in detached mode or to see historical output.
+
+**Common Flags**:
+- `-f`: Follow log output (real-time streaming).
+- `--tail`: Show only the last `N` lines of logs (e.g., `--tail 10`).
+- `-t`: Show timestamps in the log output.
+
+**Example**:
+```bash
+# View the last 20 lines of logs for the Postgres database
+docker logs --tail 20 postgres_db
+
+# Follow the logs of a web server in real-time
+docker logs -f my-web-server
 ```
 
 ---
