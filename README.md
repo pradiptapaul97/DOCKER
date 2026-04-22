@@ -1,5 +1,7 @@
 ![alt text](image.png)
 
+![alt text](<WorkflowWithDocker.png>)
+
 # 🐳 Docker Reference Guide
 
 A comprehensive guide to essential Docker commands for managing containers and images efficiently.
@@ -341,6 +343,55 @@ docker logs --tail 20 postgres_db
 
 # Follow the logs of a web server in real-time
 docker logs -f my-web-server
+```
+
+---
+
+### 12. `docker network ls`
+**Description**: List all the networks that Docker is aware of on the host. This includes built-in networks like `bridge`, `host`, and `none`.
+
+**Example**:
+```bash
+$ docker network ls
+NETWORK ID     NAME      DRIVER    SCOPE
+f9ca1d16e3dc   bridge    bridge    local
+dac43f28d82b   host      host      local
+65a0817ffe24   none      null      local
+```
+
+### 🧠 Understanding Network Columns
+
+| Column | Description | Significance |
+| :--- | :--- | :--- |
+| **NAME** | The display name of the network. | Used to identify the network when connecting containers (e.g., `docker run --network <NAME>`). |
+| **DRIVER** | The engine that manages the network. | Determines the networking behavior (Isolation, routing, multi-host connectivity). |
+| **SCOPE** | The reach of the network. | `local` means it's confined to a single host; `swarm` means it spans multiple hosts. |
+
+#### 🛠️ Common Network Drivers
+- **bridge**: The default driver. Containers on the same bridge can talk to each other but are isolated from the host's physical network.
+- **host**: Removes network isolation. The container uses the host's IP and ports directly.
+- **none**: Complete isolation. The container has no network access.
+- **overlay**: Connects multiple Docker daemons together, allowing containers to communicate across different physical machines.
+
+### 📊 Network Isolation Visualization
+
+```mermaid
+graph TD
+    Host["💻 Docker Host"]
+    subgraph "🌉 Bridge Network (Default)"
+        C1["📦 Container A"]
+        C2["📦 Container B"]
+        C1 <--> C2
+    end
+    subgraph "🚫 None Network"
+        C3["📦 Container C (Isolated)"]
+    end
+    subgraph "🏠 Host Network"
+        C4["📦 Container D (Shares Host IP)"]
+    end
+    Host --- C1
+    Host --- C2
+    Host --- C4
 ```
 
 ---
