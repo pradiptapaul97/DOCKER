@@ -810,3 +810,13 @@ docker-compose.yml
 3. **Security**: Prevents accidentally copying your local `.env` files (which might contain development secrets) into the production image.
 
 ---
+
+## 🔗 Interview Resources
+
+Looking to prepare for a Docker interview? Check out this curated list of common interview questions and answers:
+- [InterviewBit: Docker Interview Questions](https://www.interviewbit.com/docker-interview-questions)
+- [DataCamp: Docker Interview Questions](https://www.datacamp.com/blog/docker-interview-questions)
+- [Hirist: Top 55 Docker Interview Questions](https://www.hirist.tech/blog/top-55-docker-interview-questions-and-answers/)
+- [Sprintzeal: Docker Interview Questions](https://www.sprintzeal.com/blog/docker-interview-questions)
+- [LinkedIn: Top 30 Docker Interview Questions](https://www.linkedin.com/pulse/top-30-docker-interview-questions-muhammad-rashid-zlpsf/)
+- [Edureka: Docker Interview Questions](https://www.edureka.co/blog/interview-questions/docker-interview-questions/)
