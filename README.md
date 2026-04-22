@@ -743,3 +743,70 @@ mongoose.connect("mongodb://mongoadmin:password@mongo:27017");
 ```
 
 ---
+
+## 🚀 Advanced Dockerfile Optimization
+
+Once you understand the basics, you can optimize your builds for speed, size, and security.
+
+### 1. Multi-Stage Builds (Maximum Caching & Small Images)
+
+A multi-stage Dockerfile uses multiple `FROM` statements. This allows you to compile your code in a "builder" stage, and only copy the compiled, production-ready assets into a final "runner" stage. This drastically reduces the final image size and leverages Docker's layer cache for faster rebuilds.
+
+**Example: Optimized NestJS/Node.js Dockerfile**
+```dockerfile
+# Stage 1: Dependencies cache
+FROM node:22-alpine AS deps
+WORKDIR /app
+COPY package.json yarn.lock ./
+RUN yarn install --frozen-lockfile
+
+# Stage 2: Builder
+FROM node:22-alpine AS builder
+WORKDIR /app
+COPY --from=deps /app/node_modules ./node_modules
+COPY . .
+RUN yarn build
+
+# Stage 3: Runner (Final Production Image)
+FROM node:22-alpine AS runner
+WORKDIR /app
+COPY --from=builder /app/dist ./dist
+COPY --from=deps /app/node_modules ./node_modules
+COPY package.json ./
+ENV NODE_ENV=production
+CMD ["node", "dist/main.js"]
+```
+
+#### 🏆 Why is this better?
+1. **Smaller Image Size**: We only keep the compiled `/dist` folder and the `node_modules` in the final image. The raw source code (`.ts` files) is left behind in the builder stage.
+2. **Maximum Caching**: By separating the `deps` stage, Docker caches the `node_modules`. If you only change your application code (and not `package.json`), Docker instantly skips the `yarn install` step and jumps straight to building, saving massive amounts of time!
+
+#### 🧩 Line-by-Line Breakdown:
+- **`FROM ... AS stage_name`**: Names the stage so we can reference it later.
+- **`COPY --from=deps ...`**: Instead of copying from your local machine, this copies files *from a previous stage* in the Dockerfile. We grab the installed `node_modules` from `deps` and the compiled code from `builder`.
+- **`ENV NODE_ENV=production`**: Sets the environment variable for Node.js, ensuring frameworks like NestJS run in optimized production mode.
+
+---
+
+### 2. Use `.dockerignore` (CRITICAL)
+
+Just like `.gitignore` prevents files from going to GitHub, a `.dockerignore` file prevents files from being sent to the Docker daemon when you run `docker build`.
+
+**Example `.dockerignore` file:**
+```text
+node_modules
+dist
+.git
+.gitignore
+Dockerfile
+docker-compose.yml
+*.log
+.env
+```
+
+#### 🏆 Why is this better?
+1. **Faster Builds**: The Docker daemon doesn't have to load your massive local `node_modules` folder into the build context.
+2. **Cache Busting Prevention**: If a random log file changes locally, and you use `COPY . .`, Docker would bust the cache and rebuild everything. Ignoring log files prevents this.
+3. **Security**: Prevents accidentally copying your local `.env` files (which might contain development secrets) into the production image.
+
+---
