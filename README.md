@@ -585,4 +585,21 @@ One of the most common points of confusion in Docker is understanding when to us
 | **How many can you have?**| You can have as many `RUN` instructions as you need. | You should only have **one** `CMD` instruction (if you have multiple, only the last one takes effect). |
 | **Real-world Analogy** | Assembling the engine and putting gas in the car at the factory. | Turning the key in the ignition to start driving the car. |
 
+### 🏗️ Building the Dockerfile
+
+Once you have written your `Dockerfile`, you must "build" it to create a usable image.
+
+#### `docker build`
+**Description**: Build an image from a Dockerfile and a "context" (a set of files).
+
+**Example**:
+```bash
+$ docker build -t my-app:1.0 .
+```
+
+**Breaking down the command:**
+- **`docker build`**: The core command telling Docker to start the build process.
+- **`-t my-app:1.0`**: The **"tag"** flag. This assigns a friendly name (`my-app`) and a version tag (`1.0`) to your new image. If you omit the `:1.0`, Docker defaults the tag to `:latest`.
+- **`.`** (The dot): This specifies the **Build Context**. The `.` means "use the current directory". Docker will look for the `Dockerfile` in this directory and will only have access to files within this directory when executing `COPY` instructions.
+
 ---
