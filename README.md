@@ -156,6 +156,9 @@ docker run --name my-node-app node
 # Run a PostgreSQL database with an environment variable and port mapping
  docker run -d --name postgres_db -e POSTGRES_USER=pradipta -e POSTGRES_PASSWORD=password -e POSTGRES_DB=mydb -p 5432:5432 postgres:latest
 
+# Run a mongo database with an environment variable with network and port mapping
+  docker run -d --name mongo -p 27017:27017 -e MONGO_INITDB_ROOT_USERNAME=mongoadmin -e MONGO_INITDB_ROOT_PASSWORD=password --network mongo-network mongo:latest
+
 # Run Node.js interactively with a custom name
 docker run -it --name pradipta_node node
 
@@ -388,6 +391,26 @@ graph TD
     end
     subgraph "🏠 Host Network"
         C4["📦 Container D (Shares Host IP)"]
+    end
+    Host --- C1
+    Host --- C2
+    Host --- C4
+```
+
+---
+
+### 13. `docker network create`
+**Description**: Create a new network for your containers. By default, it creates a `bridge` network. Custom networks allow containers to communicate with each other using their container names as hostnames (Automatic DNS resolution).
+
+**Example**:
+```bash
+# Create a custom bridge network named 'mongo-network'
+$ docker network create mongo-network
+f4cb73665d586d8ef26038bf80f65e01b8a7435918617a5b18231145aacb90e5
+```
+
+---
+ontainer D (Shares Host IP)"]
     end
     Host --- C1
     Host --- C2
