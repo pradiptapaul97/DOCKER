@@ -603,3 +603,32 @@ $ docker build -t my-app:1.0 .
 - **`.`** (The dot): This specifies the **Build Context**. The `.` means "use the current directory". Docker will look for the `Dockerfile` in this directory and will only have access to files within this directory when executing `COPY` instructions.
 
 ---
+
+## ⚠️ Common Gotchas & Troubleshooting
+
+### ❌ `ECONNREFUSED 127.0.0.1:27017` (Database Connection Failed)
+
+**The Problem**: 
+You have an application (e.g., a Node.js/NestJS app) and a database (e.g., MongoDB) running in separate Docker containers. When your application tries to connect to the database using `localhost` (e.g., `mongodb://localhost:27017`), it crashes with a "Connection Refused" error.
+
+**The Reason**:
+In the Docker world, `localhost` (or `127.0.0.1`) refers to the *inside of that specific container*, not your host machine or other containers. 
+When your Node.js container tries to reach `localhost:27017`, it is looking for a MongoDB instance running *inside the Node.js container itself*, which doesn't exist.
+
+**The Solution**:
+When containers are on the same custom Docker network (like when using `docker-compose.yml` or creating a custom network via `docker network create`), Docker provides **Automatic DNS Resolution**. This means the *container name* acts as the hostname.
+
+You must change your connection string to use the database container's name instead of `localhost`.
+
+*Incorrect (Works locally, fails in Docker):*
+```typescript
+mongoose.connect("mongodb://mongoadmin:password@localhost:27017");
+```
+
+*Correct (Works in Docker):*
+```typescript
+// Assuming your database container is named "mongo" in your docker-compose.yml
+mongoose.connect("mongodb://mongoadmin:password@mongo:27017");
+```
+
+---
