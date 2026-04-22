@@ -604,6 +604,81 @@ $ docker build -t my-app:1.0 .
 
 ---
 
+## 🌟 Full Stack Example: NestJS + MongoDB
+
+Here is a complete, real-world example of a `docker-compose.yml` file that orchestrates a custom-built Node.js application alongside a MongoDB database.
+
+```yaml
+version: '3.8'
+
+services:
+  nest_app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: nest_app
+    ports:
+      - "3000:3000"
+    volumes:
+      - .:/app
+      - /app/node_modules
+    environment:
+      - MONGO_URL=mongodb://mongoadmin:password@mongo:27017/
+    depends_on:
+      - mongo
+    networks:
+      - mongo-network
+
+  mongo:
+    image: mongo:latest
+    container_name: mongo
+    ports:
+      - "27017:27017"
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: mongoadmin
+      MONGO_INITDB_ROOT_PASSWORD: password
+    networks:
+      - mongo-network
+    volumes:
+      - mongo-data:/data/db
+
+networks:
+  mongo-network:
+    driver: bridge
+
+volumes:
+  mongo-data:
+```
+
+### 🧩 Line-by-Line Breakdown
+
+#### 1. The `nest_app` Service (Custom Build)
+- **`build:`**: Instead of pulling a pre-made image from Docker Hub, this tells Compose to build a new image.
+  - **`context: .`**: Sets the build context to the current directory (where the compose file is).
+  - **`dockerfile: Dockerfile`**: Tells Docker to look for a file named `Dockerfile` to execute the build instructions.
+- **`container_name: nest_app`**: Names the resulting container `nest_app`.
+- **`ports: ["3000:3000"]`**: Maps port 3000 on your host machine to port 3000 inside the container (matching the `EXPOSE 3000` from our Dockerfile).
+- **`volumes:`**: Sets up **bind mounts** for local development.
+  - **`.:/app`**: Maps your local directory to `/app` inside the container. This enables "hot-reloading" because the container sees code changes in real-time.
+  - **`/app/node_modules`**: This is an "anonymous volume". It prevents your local host's `node_modules` folder from overriding the container's `node_modules` installed during the `RUN yarn install` step in the Dockerfile.
+- **`environment:`**: Passes environment variables. Here, we pass the MongoDB connection string. Notice it connects to `@mongo:27017` (the container name) rather than `localhost`.
+- **`depends_on: [mongo]`**: Ensures that the `mongo` service starts *before* the `nest_app` service starts.
+- **`networks: [mongo-network]`**: Attaches the app to our custom network so it can communicate with the database.
+
+#### 2. The `mongo` Service (Pre-built Image)
+- **`image: mongo:latest`**: Pulls the official MongoDB image from Docker Hub.
+- **`container_name: mongo`**: Names the container `mongo`. This is crucial as it becomes the DNS hostname for our `nest_app` to connect to.
+- **`ports: ["27017:27017"]`**: Exposes the database port to your host machine (useful for connecting via tools like MongoDB Compass).
+- **`environment:`**: Sets the initial root username and password for the database.
+- **`networks: [mongo-network]`**: Attaches the database to the same custom network as the app.
+- **`volumes: [mongo-data:/data/db]`**: Mounts a named volume (`mongo-data`) to `/data/db` (where Mongo stores its files). This ensures your database data survives even if the container is destroyed.
+
+#### 3. Top-Level Declarations
+- **`networks: mongo-network: driver: bridge`**: Explicitly defines the custom isolated bridge network both containers use to talk to each other securely.
+- **`volumes: mongo-data:`**: Declares the named volume `mongo-data` so Docker knows to allocate persistent storage on the host machine for the database.
+
+---
+
 ## ⚠️ Common Gotchas & Troubleshooting
 
 ### ❌ `ECONNREFUSED 127.0.0.1:27017` (Database Connection Failed)
