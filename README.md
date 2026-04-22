@@ -6,6 +6,29 @@ A comprehensive guide to essential Docker commands for managing containers and i
 
 ---
 
+## 🧱 Core Concepts
+
+Before using commands, it's essential to understand the two main building blocks of Docker:
+
+### 1. 🖼️ Docker Image
+A **Docker Image** is a read-only template containing the instructions for creating a Docker container. Think of it as a **blueprint**, a **snapshot**, or a **class** in OOP. It contains the OS, application code, and all dependencies.
+
+### 2. 📦 Docker Container
+A **Docker Container** is a running instance of an image. It is a **live, isolated environment** where your application executes. It adds a thin writable layer on top of the read-only image.
+
+---
+
+### 💡 Image vs. Container Comparison
+
+| Feature | Docker Image | Docker Container |
+| :--- | :--- | :--- |
+| **Analogy** | Blueprint / Class | Building / Object Instance |
+| **State** | Static (Stored on disk) | Dynamic (Running in memory) |
+| **Mutability** | Immutable (Read-only) | Mutable (Writable layer) |
+| **Lifespan** | Persistent | Ephemeral (can be started/stopped/deleted) |
+
+---
+
 ## 🛠️ Essential Commands
 
 ### 1. `docker version`
