@@ -466,4 +466,41 @@ networks:
 > [!TIP]
 > To run this configuration in the background, simply execute: `docker compose up -d` in the same directory as the file.
 
+### 🚀 Essential Compose Commands
+
+#### `docker compose up`
+**Description**: Builds, (re)creates, starts, and attaches to containers for all services defined in your Compose file.
+
+**Common Flags / Options**:
+- `-d`, `--detach`: **Detached mode.** Run containers in the background. This is the most common way to run compose in production or development.
+- `-f`, `--file FILE`: **Specify an alternate file.** By default, Compose looks for `docker-compose.yml` or `compose.yaml`. You can specify a different file, like `docker-compose -f docker-compose.prod.yml up`.
+- `--build`: **Force build.** Build images before starting containers. Essential if you've made changes to a `Dockerfile` that your compose file builds from.
+- `--force-recreate`: **Recreate containers.** Forces the recreation of containers even if their configuration or image hasn't changed.
+- `--remove-orphans`: **Clean up.** Removes containers for services not defined in the current Compose file (useful if you deleted a service from the file).
+- `--no-deps`: **No dependencies.** Don't start linked services (e.g., start only the web app without the database it depends on).
+
+**Examples**:
+```bash
+# 1. Run containers in the background (Detached mode)
+docker compose up -d
+
+# 2. Use a specific compose file (e.g., for production)
+docker compose -f docker-compose.prod.yml up -d
+
+# 3. Force build images before starting containers
+docker compose up -d --build
+
+# 4. Force recreate containers even if unchanged
+docker compose up -d --force-recreate
+
+# 5. Clean up old containers whose services were removed from the yaml file
+docker compose up -d --remove-orphans
+
+# 6. Start a specific service (e.g., 'web') without starting its dependencies
+docker compose up -d --no-deps web
+
+# 7. Combine flags: Use a specific file, force build, and remove orphans
+docker compose -f docker-compose.prod.yml up -d --build --remove-orphans
+```
+
 ---
