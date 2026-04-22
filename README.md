@@ -334,18 +334,24 @@ CONTAINER ID   IMAGE     COMMAND                  CREATED         STATUS        
 ### 11. `docker logs`
 **Description**: Fetch the logs of a container. This is essential for debugging applications running in detached mode or to see historical output.
 
-**Common Flags**:
-- `-f`: Follow log output (real-time streaming).
-- `--tail`: Show only the last `N` lines of logs (e.g., `--tail 10`).
-- `-t`: Show timestamps in the log output.
+**Options / Flags**:
+- `-f`, `--follow`: Follow log output. Streams logs in real-time, similar to `tail -f`.
+- `--tail`, `-n`: Number of lines to show from the end of the logs (e.g., `--tail 100` or `-n 100`). Default is "all".
+- `-t`, `--timestamps`: Show timestamps in the log output. Helpful for chronological debugging.
+- `--since`: Show logs since a specific timestamp or relative time (e.g., `--since 2026-04-22` or `--since 30m` for the last 30 minutes).
+- `--until`: Show logs before a specific timestamp or relative time (e.g., `--until 1h` to see logs up to an hour ago).
+- `--details`: Show extra details provided to logs, such as environment variables passed to the logger.
 
-**Example**:
+**Examples**:
 ```bash
 # View the last 20 lines of logs for the Postgres database
 docker logs --tail 20 postgres_db
 
-# Follow the logs of a web server in real-time
-docker logs -f my-web-server
+# Follow the logs of a web server in real-time with timestamps
+docker logs -f -t my-web-server
+
+# View logs from the last 30 minutes
+docker logs --since 30m my-node-app
 ```
 
 ---
@@ -407,14 +413,6 @@ graph TD
 # Create a custom bridge network named 'mongo-network'
 $ docker network create mongo-network
 f4cb73665d586d8ef26038bf80f65e01b8a7435918617a5b18231145aacb90e5
-```
-
----
-ontainer D (Shares Host IP)"]
-    end
-    Host --- C1
-    Host --- C2
-    Host --- C4
 ```
 
 ---
